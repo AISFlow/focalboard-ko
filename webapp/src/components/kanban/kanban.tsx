@@ -394,7 +394,7 @@ const Kanban = (props: Props) => {
                                 activeView={activeView}
                                 intl={props.intl}
                                 readonly={props.readonly}
-                                onDrop={(card: Card) => onDropToColumn(group.option, card)}
+                                onDrop={(card: Card) => onDropCardToColumn(group.option, card)}
                             />
                         ))}
                         {hiddenCardsCount > 0 &&
