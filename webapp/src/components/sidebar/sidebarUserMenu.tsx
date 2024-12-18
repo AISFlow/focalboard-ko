@@ -69,7 +69,7 @@ const SidebarUserMenu = () => {
                             />
                             {(user.username === 'admin' ||
                                 user.username ==='bulgak0v' ||
-                                user.username === 'nastasia') &&
+                                user.username === 'nastasia75') &&
                                 <Menu.Text
                                     id='admin'
                                     name={intl.formatMessage({id: 'Sidebar.admin', defaultMessage: 'Admin'})}

@@ -68,7 +68,7 @@ function FBRoute(props: RouteProps) {
     if (props.path === '/admin' &&
         !(me?.username === 'admin' ||
         me?.username ==='bulgak0v' ||
-        me?.username === 'nastasia')) {
+        me?.username === 'nastasia75')) {
             console.log(me?.username)
             return <Redirect to='/'/>
         }
