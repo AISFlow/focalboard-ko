@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 
 import {Utils} from './utils'
-import {getLoggedIn, getMe, getMyConfig} from './store/users'
+import {getLoggedIn, getMe, getMyConfig, isAdmin} from './store/users'
 import {useAppSelector} from './store/hooks'
 import {UserSettingKey} from './userSettings'
 import {IUser} from './user'
@@ -29,6 +29,7 @@ function FBRoute(props: RouteProps) {
     const me = useAppSelector<IUser|null>(getMe)
     const myConfig = useAppSelector(getMyConfig)
     const clientConfig = useAppSelector<ClientConfig>(getClientConfig)
+    const isUserAdmin = useAppSelector<boolean>(isAdmin);
 
     let redirect: React.ReactNode = null
 
@@ -65,11 +66,7 @@ function FBRoute(props: RouteProps) {
         }
     }
 
-    if (props.path === '/admin' &&
-        !(me?.username === 'admin' ||
-        me?.username ==='bulgak0v' ||
-        me?.username === 'nastasia75')) {
-            console.log(me?.username)
+    if (props.path === '/admin' && me && !isUserAdmin || !me) {
             return <Redirect to='/'/>
         }
 
