@@ -1,6 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
     Redirect,
     Route,
@@ -66,9 +66,11 @@ function FBRoute(props: RouteProps) {
         }
     }
 
-    if (props.path === '/admin' && me && !isUserAdmin || !me) {
+    if (redirect === null && props.path === '/admin' && !isUserAdmin) {
+        redirect = () => {
             return <Redirect to='/'/>
         }
+    }
 
     return (
         <Route
