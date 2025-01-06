@@ -15,8 +15,16 @@
 }
 
 .users-list {
+    margin: 0;
+    padding: 0;
     overflow-y: scroll;
     scroll-behavior: smooth;
+    list-style-type: none;
+}
+
+.user-item {
+    max-width: 600px;
+    border-bottom: solid 1px rgba(var(--center-channel-color-rgb), 0.16);
 }
 
 .title {
