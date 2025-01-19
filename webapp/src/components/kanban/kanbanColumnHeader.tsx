@@ -54,7 +54,7 @@ export default function KanbanColumnHeader(props: Props): JSX.Element {
 
     const [{isDragging}, drag] = useDrag(() => ({
         type: 'column',
-        item: {content: group.option, type: 'column'},
+        item: group.option,
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
@@ -64,11 +64,11 @@ export default function KanbanColumnHeader(props: Props): JSX.Element {
         collect: (monitor) => ({
             isOver: monitor.isOver(),
         }),
-        hover(item:  { content: IPropertyOption; type: string }, monitor){
+        hover(item: IPropertyOption, monitor){
             if (!headerRef.current) {
                 return
             }
-            props.moveColumn(item.content, group.option, monitor, headerRef)
+            props.moveColumn(item, group.option, monitor, headerRef)
         },
     }), [props.moveColumn])
 
