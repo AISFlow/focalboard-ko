@@ -271,7 +271,9 @@ const CalendarFullView = (props: Props): JSX.Element|null => {
     }, [dateDisplayProperty, canAddCards])
 
     return (
-        <div className='CalendarContainer'>
+        <div
+            className='CalendarContainer'
+        >
             <FullCalendar
                 key={activeView.id}
                 dayCellContent={dayCellContent}
@@ -291,8 +293,7 @@ const CalendarFullView = (props: Props): JSX.Element|null => {
                 select={onNewEvent}
                 firstDay={1}
             />
-            {showConfirmationDialogBox && (
-                <ConfirmationDialogBox dialogBox={confirmDialogProps}/>
+            {showConfirmationDialogBox && (<ConfirmationDialogBox dialogBox={confirmDialogProps}/>
             )}
         </div>
     )
