@@ -138,6 +138,24 @@ optionalDependencies:
     version: 9.7.0
 
 devDependencies:
+  '@fontsource/noto-sans':
+    specifier: ^5.2.6
+    version: 5.2.6
+  '@fontsource/noto-sans-jp':
+    specifier: ^5.2.5
+    version: 5.2.5
+  '@fontsource/noto-sans-kr':
+    specifier: ^5.2.5
+    version: 5.2.5
+  '@fontsource/noto-serif':
+    specifier: ^5.2.6
+    version: 5.2.6
+  '@fontsource/noto-serif-jp':
+    specifier: ^5.2.5
+    version: 5.2.5
+  '@fontsource/noto-serif-kr':
+    specifier: ^5.2.5
+    version: 5.2.5
   '@formatjs/cli':
     specifier: ^4.8.2
     version: 4.8.4(ts-jest@27.1.5)
@@ -228,6 +246,9 @@ devDependencies:
   cypress-real-events:
     specifier: ^1.7.0
     version: 1.7.1(cypress@9.7.0)
+  d2coding:
+    specifier: ^1.3.2
+    version: 1.3.2
   eslint:
     specifier: ^8.11.0
     version: 8.19.0
@@ -1153,6 +1174,30 @@ packages:
 
   /@floating-ui/utils@0.2.2:
     resolution: {integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==}
+
+  /@fontsource/noto-sans-jp@5.2.5:
+    resolution: {integrity: sha512-ISoJUQlsuSo4y56P+eJD+g022BRAF1BC2uCyEFGRsob0g8VvQAoWNMlWh+P0VQw68QzZHHj41zRzeRFpzAdA7w==}
+    dev: true
+
+  /@fontsource/noto-sans-kr@5.2.5:
+    resolution: {integrity: sha512-9swPyua410J00z+GhemPKK/StWdiW07dchS9JcskesdQrhnPBLD6zVQtQsrj+ZPXTFBftbcrMlWFsWhmFn6S9w==}
+    dev: true
+
+  /@fontsource/noto-sans@5.2.6:
+    resolution: {integrity: sha512-46D39T1/QJ16LSbCTaNjjrGS6Y69FMLS9FeHKsrXSQg15Z2MFqmlnNMpURx2l6Sr3x9t9EVdr3CAkHnZyvea+w==}
+    dev: true
+
+  /@fontsource/noto-serif-jp@5.2.5:
+    resolution: {integrity: sha512-SL1XItZarPv+3KXo/D0Xa8hXChZN7kkuWuAqrRqilWLn/UKbCPIPoDr/rnbqmVMlCGzshX7PAPR+FW1ka5oKIw==}
+    dev: true
+
+  /@fontsource/noto-serif-kr@5.2.5:
+    resolution: {integrity: sha512-hF43MqdaUbpE12UINLn3pl0G1bAI43TJJueJ2wiovWak8zM1ej1ckV89pBA5VcTTKjN0iocGWKQ/HC+TeJ5ugQ==}
+    dev: true
+
+  /@fontsource/noto-serif@5.2.6:
+    resolution: {integrity: sha512-mEGeD/duOwgEJooUsXpdCz3WdBJBfm7LEP2XQz/OSBXxj/GVwisULiOH2B7oL2tLBT6EGKTzZfmJAo6ZzOG0+w==}
+    dev: true
 
   /@formatjs/cli@4.8.4(ts-jest@27.1.5):
     resolution: {integrity: sha512-zZI8QYVl5CHaT6j9OHjS+0mMnWzopBVH0un4n5b4IhIJRzIKnxwFTkxBp5Ifqj6FntrwzIGqP+D6v8u7MPYsmw==}
@@ -3979,6 +4024,10 @@ packages:
       tmp: 0.2.1
       untildify: 4.0.0
       yauzl: 2.10.0
+
+  /d2coding@1.3.2:
+    resolution: {integrity: sha512-g+Dgy1ZSAKTgWIl2jhpr6K3keFic8aapOFlVh74eoBYPbjGq5lMdEzANG5w6hFX1fzQBsaAzhuTYICRjyt4OcA==}
+    dev: true
 
   /dashdash@1.14.1:
     resolution: {integrity: sha512-jRFi8UDGo6j+odZiEpjazZaWqEal3w/basFjQHQEwVtZJGDpxbH1MeYluwCS8Xq5wmLJooDlMgvVarmWfGM44g==}
@@ -10779,6 +10828,7 @@ packages:
 
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+    requiresBuild: true
 
   /yaml@1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}

@@ -104,6 +104,7 @@ function makeCommonConfig() {
         output: {
             library: 'Focalboard',
             filename: 'static/[name].js',
+            // filename: 'static/[name].[contenthash].js',
             path: outpath,
         },
     };
