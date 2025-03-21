@@ -125,19 +125,32 @@ func (ws *Server) serveFileWithCompression(w http.ResponseWriter, r *http.Reques
 	http.ServeFile(w, r, filePath)
 }
 
-// registerRoutes sets up the routes for serving static files and the index page.
+// registerRoutes sets up the routes for serving static files, index page, WebSocket, and robots.txt.
 func (ws *Server) registerRoutes() {
-	// Static files with compression support.
+	// Route for /robots.txt with no cache.
+	ws.Router().HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Write([]byte("User-agent: *\nDisallow: /"))
+	})
+
+	// Static files with compression support and 30-day cache control.
 	ws.Router().PathPrefix("/static/").Handler(http.StripPrefix(ws.basePrefix+"/static/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set Cache-Control header for 30 days (2592000 seconds)
+		w.Header().Set("Cache-Control", "public, max-age=2592000")
 		// Derive the relative path from the URL.
 		relativePath := strings.TrimPrefix(r.URL.Path, ws.basePrefix+"/static/")
 		filePath := filepath.Join(ws.rootPath, "static", relativePath)
 		ws.serveFileWithCompression(w, r, filePath)
 	})))
 
-	// Default route: serve the index.html file.
+	// Default route: serve the index.html file with no cache.
 	ws.Router().PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set headers to prevent caching of index.html.
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Header().Set("Pragma", "no-cache")
+		w.Header().Set("Expires", "0")
+
 		indexTemplate, err := template.New("index").ParseFiles(path.Join(ws.rootPath, "index.html"))
 		if err != nil {
 			ws.logger.Log(errorOrWarn(), "Unable to serve the index.html file", mlog.Err(err))

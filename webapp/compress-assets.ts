@@ -1,26 +1,33 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
+
 import {promises as fs} from 'fs'
-import * as path from 'path'
+import path from 'path'
 import {exec} from 'child_process'
 import {promisify} from 'util'
-import * as zlib from 'zlib'
+import {
+    gzip,
+    brotliCompress,
+    constants as zlibConstants,
+    ZlibOptions,
+    BrotliOptions,
+} from 'zlib'
 
 import glob from 'glob'
-import winston from 'winston'
+import winston, {Logger} from 'winston'
 
 // Promisified functions
-const execAsync = promisify(exec)
-const globAsync = promisify(glob)
-const gzipAsync = promisify(zlib.gzip)
-const brotliCompressAsync = promisify(zlib.brotliCompress)
+const execAsync: (command: string) => Promise<{ stdout: string; stderr: string }> = promisify(exec)
+const globAsync: (pattern: string, options?: glob.IOptions) => Promise<string[]> = promisify(glob)
+const gzipAsync: (data: Buffer, options?: ZlibOptions) => Promise<Buffer> = promisify(gzip)
+const brotliCompressAsync: (data: Buffer, options?: BrotliOptions) => Promise<Buffer> = promisify(brotliCompress)
 
 // Logger configuration
-const logger = winston.createLogger({
+const logger: Logger = winston.createLogger({
     level: 'info',
     format: winston.format.combine(
         winston.format.timestamp(),
-        winston.format.printf(({timestamp, level, message}) =>
+        winston.format.printf(({timestamp, level, message}: winston.Logform.TransformableInfo): string =>
             `${timestamp} [${level.toUpperCase()}] ${message}`,
         ),
     ),
@@ -29,16 +36,13 @@ const logger = winston.createLogger({
 
 // Compression options interface
 interface CompressionOptions {
-    gzipOptions?: zlib.ZlibOptions // Options for Gzip compression
-    brotliOptions?: zlib.BrotliOptions // Options for Brotli compression
-    zstdOptions?: string // CLI options for Zstd compression
+    gzipOptions?: ZlibOptions
+    brotliOptions?: BrotliOptions
+    zstdOptions?: string
 }
 
 /**
- * Compresses the provided data using Gzip and Brotli algorithms.
- * @param data - The input Buffer.
- * @param filePath - Original file path for logging purposes.
- * @param options - Compression options.
+ * Compresses data using Gzip and Brotli.
  */
 async function compressWithGzipAndBrotli(
     data: Buffer,
@@ -46,61 +50,55 @@ async function compressWithGzipAndBrotli(
     options?: CompressionOptions,
 ): Promise<void> {
     try {
-        const gzip = await gzipAsync(data, options?.gzipOptions)
+        const gzip: Buffer = await gzipAsync(data, options?.gzipOptions)
         await fs.writeFile(`${filePath}.gz`, gzip)
 
-        const brotli = await brotliCompressAsync(data, options?.brotliOptions)
+        const brotli: Buffer = await brotliCompressAsync(data, options?.brotliOptions)
         await fs.writeFile(`${filePath}.br`, brotli)
 
         logger.info(`Compressed (Gzip + Brotli): ${filePath}`)
-    } catch (error) {
+    } catch (error: unknown) {
         logger.error(`Compression failed (.gz/.br): ${filePath} - ${(error as Error).message}`)
     }
 }
 
 /**
- * Compresses the file using Zstd via the CLI.
- * @param filePath - The path of the file to compress.
- * @param options - Compression options for Zstd.
+ * Compresses file using Zstd via CLI.
  */
 async function compressWithZstd(
     filePath: string,
     options?: CompressionOptions,
 ): Promise<void> {
     try {
-        const extraOptions = options?.zstdOptions ?? ''
-        const cmd = `zstd -f -q ${extraOptions} "${filePath}" -o "${filePath}.zst"`
+        const extraOptions: string = options?.zstdOptions ?? ''
+        const cmd: string = `zstd -f -q ${extraOptions} "${filePath}" -o "${filePath}.zst"`
         await execAsync(cmd)
         logger.info(`Compressed (Zstd): ${filePath}`)
-    } catch (error) {
+    } catch (error: unknown) {
         logger.error(`Zstd compression failed: ${filePath} - ${(error as Error).message}`)
     }
 }
 
 /**
- * Reads and compresses the file using both compression methods.
- * @param filePath - The path of the file to compress.
- * @param options - Compression options.
+ * Compresses a single file using all compression methods.
  */
 async function compressFile(
     filePath: string,
     options?: CompressionOptions,
 ): Promise<void> {
     try {
-        const data = await fs.readFile(filePath)
+        const data: Buffer = await fs.readFile(filePath)
         await Promise.all([
             compressWithGzipAndBrotli(data, filePath, options),
             compressWithZstd(filePath, options),
         ])
-    } catch (error) {
+    } catch (error: unknown) {
         logger.error(`Failed to process file: ${filePath} - ${(error as Error).message}`)
     }
 }
 
 /**
- * Finds and compresses all assets matching the provided glob pattern.
- * @param globPattern - Glob pattern to match files.
- * @param options - Compression options.
+ * Compresses all assets matched by glob pattern.
  */
 async function compressAssets(
     globPattern: string,
@@ -108,30 +106,39 @@ async function compressAssets(
 ): Promise<void> {
     try {
         const files: string[] = await globAsync(globPattern, {nodir: true})
-        const assets = files.filter((file) => (/\.(js|css|html|eot|tiff|svg|woff2|woff|ttf)$/).test(file))
+        const assets: string[] = files.filter((file: string): boolean =>
+            /\.(js|css|html|eot|tiff|svg|woff2?|ttf)$/.test(file),
+        )
+
         logger.info(`Found ${assets.length} asset(s) to compress.`)
-        await Promise.all(assets.map((file) => compressFile(file, options)))
-    } catch (error) {
+        await Promise.all(assets.map((file: string): Promise<void> => compressFile(file, options)))
+    } catch (error: unknown) {
         logger.error(`Asset compression error: ${(error as Error).message}`)
         throw error
     }
 }
 
-// Default compression options; adjust as required.
+// Default compression settings
 const defaultCompressionOptions: CompressionOptions = {
     gzipOptions: {level: 9},
-    brotliOptions: {params: {[zlib.constants.BROTLI_PARAM_QUALITY]: 11}},
+    brotliOptions: {
+        params: {
+            [zlibConstants.BROTLI_PARAM_QUALITY]: 11,
+        },
+    },
     zstdOptions: '-22',
-};
+}
 
 // Entry point
-(async () => {
+async function main(): Promise<void> {
     try {
-        const outputDir = path.resolve(__dirname, 'pack', 'static')
-        const pattern = path.join(outputDir, '**', '*')
+        const outputDir: string = path.resolve(__dirname, 'pack', 'static')
+        const pattern: string = path.join(outputDir, '**', '*')
         await compressAssets(pattern, defaultCompressionOptions)
-    } catch (error) {
+    } catch (error: unknown) {
         logger.error(`Unexpected error: ${(error as Error).message}`)
         throw error
     }
-})()
+}
+
+main()

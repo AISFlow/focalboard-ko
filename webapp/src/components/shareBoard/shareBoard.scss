@@ -1,5 +1,5 @@
 
-@import '../../styles/z-index';
+@use '../../styles/z-index';
 
 .ShareBoardDialog {
     .dialog {
@@ -152,7 +152,7 @@
         width: 100%;
 
         i {
-            @include z-index(share-board-element);
+            @include z-index.z-index(share-board-element);
             color: rgba(var(--center-channel-color-rgb), 0.64);
             position: relative;
             font-size: 18px;

@@ -1,10 +1,10 @@
-// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
-// See LICENSE.txt for license information.
 const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 
-const makeCommonConfig = require('./webpack.common.js');
+const commonModule = require('./webpack.common.js');
+const makeCommonConfig = typeof commonModule === 'function' ? commonModule : commonModule.default;
+
 const commonConfig = makeCommonConfig();
 
 const config = merge(commonConfig, {
@@ -16,12 +16,8 @@ const config = merge(commonConfig, {
             new TerserPlugin({
                 extractComments: false,
                 terserOptions: {
-                    output: {
-                        comments: false,
-                    },
-                    compress: {
-                        drop_console: true,
-                    },
+                    output: { comments: false },
+                    compress: { drop_console: true },
                 },
             }),
         ],
