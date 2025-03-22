@@ -188,10 +188,5 @@ func ReadConfigFile(configFilePath string) (*Configuration, error) {
 
 func removeSecurityData(config Configuration) Configuration {
 	clean := config
-
-	// Mask sensitive Amazon S3 credentials
-	clean.FilesS3Config.AccessKeyID = "[REDACTED]"
-	clean.FilesS3Config.SecretAccessKey = "[REDACTED]"
-
 	return clean
 }
