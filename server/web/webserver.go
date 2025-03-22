@@ -136,7 +136,7 @@ func (ws *Server) registerRoutes() {
 	// Static files with compression support and 30-day cache control.
 	ws.Router().PathPrefix("/static/").Handler(http.StripPrefix(ws.basePrefix+"/static/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set Cache-Control header for 30 days (2592000 seconds)
-		w.Header().Set("Cache-Control", "public, max-age=2592000")
+		w.Header().Set("Cache-Control", "public, max-age=2592000, immutable")
 		// Derive the relative path from the URL.
 		relativePath := strings.TrimPrefix(r.URL.Path, ws.basePrefix+"/static/")
 		filePath := filepath.Join(ws.rootPath, "static", relativePath)
