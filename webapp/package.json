@@ -4,7 +4,7 @@
 	"private": true,
 	"description": "",
 	"scripts": {
-		"pack": "cross-env NODE_ENV=production webpack --config webpack.prod.js && npx tsx compress-assets.ts",
+		"pack": "cross-env NODE_ENV=production webpack --config webpack.prod.js && tsx compress-assets.ts",
 		"packdev": "cross-env NODE_ENV=dev webpack --config webpack.dev.js",
 		"watchdev": "cross-env NODE_ENV=dev webpack --watch --progress --config webpack.dev.js",
 		"deveditor": "cross-env NODE_ENV=dev webpack server --config webpack.editor.js",
@@ -170,8 +170,5 @@
 		"webpack-dev-server": "^4.15.2",
 		"webpack-merge": "^5.10.0",
 		"winston": "^3.17.0"
-	},
-	"optionalDependencies": {
-		"cypress": "^9.7.0"
 	}
 }
